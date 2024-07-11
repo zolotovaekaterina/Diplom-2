@@ -1,12 +1,14 @@
+import api.clients.UserClient;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
+import models.Constants;
 import org.junit.Before;
 import org.junit.Test;
 import org.hamcrest.Matchers;
 
 public class UserAuthTest {
 
-    Steps step = new Steps();
+    UserClient userClient = new UserClient();
 
     @Before
     public void setUp() {
@@ -17,7 +19,7 @@ public class UserAuthTest {
     @Test
     @DisplayName("Авторизация пользователя")
     public void successLogin() {
-        step.authOfUser(step.staticUser).then().statusCode(200)
+        userClient.authOfUser(userClient.staticUser).then().statusCode(200)
                 .and().body("success", Matchers.is(true))
                 .and().body("accessToken", Matchers.notNullValue())
                 .and().body("refreshToken", Matchers.notNullValue());
@@ -26,7 +28,7 @@ public class UserAuthTest {
     @Test
     @DisplayName("Авторизация несуществующего пользователя")
     public void failedLogin() {
-        step.authOfUser(step.user).then().statusCode(401)
+        userClient.authOfUser(userClient.user).then().statusCode(401)
                 .and().body("success", Matchers.is(false))
                 .and().body("message", Matchers.equalTo("email or password are incorrect"));
     }

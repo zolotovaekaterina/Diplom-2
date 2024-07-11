@@ -1,6 +1,9 @@
+import api.clients.UserClient;
 import com.github.javafaker.Faker;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
+import models.Constants;
+import models.User;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,7 +11,7 @@ import org.junit.Test;
 import static io.restassured.RestAssured.given;
 
 public class UserUpdateTest {
-    Steps step = new Steps();
+    UserClient userClient = new UserClient();
 
     static Faker faker = new Faker();
 
@@ -22,7 +25,7 @@ public class UserUpdateTest {
         public void successUpdateInfoTest() {
         User user = new User(faker.name().firstName()+"@mail.ru", faker.name().username()+"One", faker.name().username()+"Four");
         User userUpd = new User(faker.name().firstName()+"@gmail.com", faker.name().username()+"Two", faker.name().username()+"Five");
-        String auth = step.getToken(user).extract().path("accessToken").toString();
+        String auth = userClient.getToken(user).extract().path("accessToken").toString();
         given()
                 .header("Content-type", "application/json")
                 .header("Authorization",
@@ -41,7 +44,7 @@ public class UserUpdateTest {
     public void failedUpdateInfoTest() {
         given()
                 .header("Content-type", "application/json")
-                .body(step.userUpdated)
+                .body(userClient.userUpdated)
                 .when()
                 .patch("/api/auth/user")
                 .then().statusCode(401)

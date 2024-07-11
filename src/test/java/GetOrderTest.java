@@ -1,5 +1,7 @@
+import api.clients.OrderClient;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
+import models.Constants;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,7 +9,7 @@ import org.junit.Test;
 import static io.restassured.RestAssured.given;
 
 public class GetOrderTest {
-    Steps step = new Steps();
+    OrderClient orderClient = new OrderClient();
 
     @Before
     public void setUp() {
@@ -19,7 +21,7 @@ public class GetOrderTest {
     public void getOrdersWithAuth() {
         given()
                 .header("Content-type", "application/json")
-                .auth().oauth2(step.successLogin())
+                .auth().oauth2(orderClient.successLogin())
                 .when()
                 .get("/api/orders")
                 .then().statusCode(200)
